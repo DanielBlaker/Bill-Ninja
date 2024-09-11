@@ -1,15 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill Ninja Mobile</title>
 </head>
-<body>
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-    <script>
-    const socket = io();
 
+<body>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+        integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+        crossorigin="anonymous"></script>
+    <script>
+        const socket = io();
+
+        function accelerationHandler(acceleration) {
+            socket.emit('acceleration', JSON.stringify(acceleration))
+            console.log(acceleration)
+            document.body.innerText = JSON.stringify(acceleration)
+        }
+
+        function rotationHandler(rotation) {
+            socket.emit('rotation', rotation)
+            console.log(rotation)
+        }
+            document.body.innerText = "start"
+            console.log("Start")
+        if ('LinearAccelerationSensor' in window && 'Gyroscope' in window) {
+            console.log("First")
+            let accelerometer = new LinearAccelerationSensor();
+            accelerometer.addEventListener('reading', e => {
+                accelerationHandler(accelerometer);
+            });
+            accelerometer.start();
+
+            let gyroscope = new Gyroscope();
+            gyroscope.addEventListener('reading', e => rotationHandler({
+                alpha: gyroscope.x,
+                beta: gyroscope.y,
+                gamma: gyroscope.z
+            }));
+            gyroscope.start();
+
+        } else if ('DeviceMotionEvent' in window) {
+            console.log("Second")
+            var onDeviceMotion = function (eventData) {
+                accelerationHandler(eventData);
+                rotationHandler(eventData.rotationRate);
+            }
+            window.addEventListener('devicemotion', onDeviceMotion, false);
+        }
     </script>
 </body>
+
 </html>
