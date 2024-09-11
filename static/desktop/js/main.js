@@ -151,9 +151,9 @@ function populate() {
 
         var textDimensions = calculateTextDimensions(expenceText);
         
-        w = textDimensions.width // / 10 + Math.random()*10;
-        h = textDimensions.height // / 10 + Math.random()*10;
-        d = 30 + Math.random()*10;
+        w = textDimensions.width * (1 + Math.random()/5);
+        h = textDimensions.height * (1 + Math.random()/5);
+        d = 5 + Math.random()*10;
 
         bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
         meshs[i] = new THREE.Mesh( geos.box, letterMaterial );
@@ -237,8 +237,8 @@ function basicTexture(n){
     return tx;
 }
 
-function createTextTexture(text, fontSize = 48) {
-    var dimensions = calculateTextDimensions(text, fontSize);
+function createTextTexture(text, fontSize = 20, fontFamily = 'Impact') {
+    var dimensions = calculateTextDimensions(text, fontSize, fontFamily);
     var canvas = document.createElement('canvas');
     canvas.width = dimensions.width;
     canvas.height = dimensions.height;
@@ -246,7 +246,7 @@ function createTextTexture(text, fontSize = 48) {
     ctx.fillStyle = '#FFFFFF'; // Background color
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#000000'; // Text color
-    ctx.font = `${fontSize}px Arial`;
+    ctx.font = `${fontSize}px ${fontFamily}`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
 
@@ -260,10 +260,10 @@ function createTextTexture(text, fontSize = 48) {
     return texture;
 }
 
-function calculateTextDimensions(text, fontSize = 48) {
+function calculateTextDimensions(text, fontSize = 20, fontFamily = 'Arial') {
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
-    ctx.font = `${fontSize}px Arial`;
+    ctx.font = `${fontSize}px ${fontFamily}`;
     var lines = text.split('\n');
     var width = 0;
     var height = lines.length * fontSize;
