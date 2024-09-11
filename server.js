@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 
 app.use(express.static('static'))
 
-server.listen(443, '10.50.0.230', function (err) {
+server.listen(443, "localhost", function (err) {
     if (err) console.log(err);
     console.log("Live at :8080")
 });
