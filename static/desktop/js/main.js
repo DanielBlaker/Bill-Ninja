@@ -134,16 +134,25 @@ function populate() {
     world.clear();
     bodys = [];
 
+    var texts = ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze"];
+    var intervalMs = 2000;
+
+
     var expenceText = "The Expence Is";
     var letterTexture = createTextTexture(expenceText);
     var letterMaterial = new THREE.MeshBasicMaterial({ map: letterTexture });
 
     addGrounds(letterMaterial);
 
-    var max = 30;
-    for (var i = 0; i < max; i++) {
-        addObject(expenceText);
+    var index = 0;
+    function dropNextText() {
+        if (index < texts.length) {
+            addObject(texts[index]);
+            index++;
+            setTimeout(dropNextText, intervalMs);
+        }
     }
+    dropNextText();
 }
 
 function addObject(text) {
