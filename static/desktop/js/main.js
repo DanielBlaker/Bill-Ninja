@@ -100,6 +100,7 @@ function addStaticBox(size, position, rotation) {
     grounds.push(mesh);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    return mesh
 }
 
 function clearMesh(){
@@ -119,6 +120,8 @@ function initOimoPhysics(){
     populate();
 }
 
+var floor
+
 function populate() {
     // reset old
     clearMesh();
@@ -132,7 +135,7 @@ function populate() {
 
     addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
     addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
-    addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
+    floor = addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
 
     //add object
     var x, y, z, w, h, d;
@@ -228,3 +231,14 @@ function basicTexture(n){
     tx.needsUpdate = true;
     return tx;
 }
+
+
+const socket = io();
+socket.on('rotation', console.log)
+socket.on('acceleration', (e) => {
+    console.log(e)
+    floor.rotation.x = e.rotationRate.alpha/360
+    floor.rotation.y = e.rotationRate.beta/360
+    floor.rotation.z = e.rotationRate.gamma/360
+    console.log(floor.rotation)
+})

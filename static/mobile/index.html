@@ -8,48 +8,56 @@
 </head>
 
 <body>
+    <button id="request" onclick="permission()">Request</button>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
         integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
         crossorigin="anonymous"></script>
     <script>
+
         const socket = io();
 
         function accelerationHandler(acceleration) {
             socket.emit('acceleration', JSON.stringify(acceleration))
             console.log(acceleration)
-            document.body.innerText = JSON.stringify(acceleration)
+            // document.body.innerText = JSON.stringify(acceleration)
         }
 
         function rotationHandler(rotation) {
             socket.emit('rotation', rotation)
             console.log(rotation)
         }
-            document.body.innerText = "start"
-            console.log("Start")
-        if ('LinearAccelerationSensor' in window && 'Gyroscope' in window) {
-            console.log("First")
-            let accelerometer = new LinearAccelerationSensor();
-            accelerometer.addEventListener('reading', e => {
-                accelerationHandler(accelerometer);
-            });
-            accelerometer.start();
+        
+        function handleMotion(event) {
+            const { acceleration, rotationRate, interval } = event;
+            const data = {
+              acceleration: {
+                x: acceleration.x,
+                y: acceleration.y,
+                z: acceleration.z
+              },
+              rotationRate: {
+                alpha: rotationRate.alpha,
+                beta: rotationRate.beta,
+                gamma: rotationRate.gamma
+              },
+              interval
+            };
+            
+            socket.emit('acceleration', data);
+            dataElement.textContent = JSON.stringify(data, null, 2);
+          }
 
-            let gyroscope = new Gyroscope();
-            gyroscope.addEventListener('reading', e => rotationHandler({
-                alpha: gyroscope.x,
-                beta: gyroscope.y,
-                gamma: gyroscope.z
-            }));
-            gyroscope.start();
-
-        } else if ('DeviceMotionEvent' in window) {
-            console.log("Second")
-            var onDeviceMotion = function (eventData) {
-                accelerationHandler(eventData);
-                rotationHandler(eventData.rotationRate);
-            }
-            window.addEventListener('devicemotion', onDeviceMotion, false);
-        }
+          if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+              .then(permissionState => {
+                if (permissionState === 'granted') {
+                  window.addEventListener('devicemotion', handleMotion);
+                }
+              })
+              .catch(console.error);
+          } else {
+            window.addEventListener('deviceorientation', handleMotion);
+          }
     </script>
 </body>
 
