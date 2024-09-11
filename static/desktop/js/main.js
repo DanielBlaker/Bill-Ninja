@@ -29,7 +29,6 @@ function loop() {
     updateBat();
     requestAnimationFrame(loop);
 }
-
 function populate() {
     clearMesh();
     world.clear();
@@ -37,27 +36,34 @@ function populate() {
     bodys = [];
 
     var texts = [
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
-        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
+        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"]
     ];
-    var intervalMs = 200;
+
+    let delayBetweenArrays = 10000; // 2 seconds delay before starting the next array
+    let totalDelay = 0;
+
+    texts.forEach((arr, index) => {
+        setTimeout(() => {
+            dropExpence(arr);
+        }, totalDelay);
+        totalDelay += delayBetweenArrays + arr.length * 200; // Add delay for each string block
+    });
 
     addGrounds();
+}
 
+function dropExpence(texts) {
     var index = 0;
     function dropNextText() {
         if (index < texts.length) {
             addObject(texts[index]);
             index++;
-            setTimeout(dropNextText, intervalMs);
+            setTimeout(dropNextText, 1000); // 200ms delay between each string block
         }
     }
     dropNextText();
@@ -93,8 +99,8 @@ function addGrounds() {
     var redBlock = addStaticBox([40, 40, 390], [180, 20, 0], [0, 0, 0], redGlowMaterial);
     var floor = addStaticBox([400, 80, 400], [0, -40, 0], [0, 0, 0]);
 
-    addEdgeLines(greenBlock, 0x00ff00);
-    addEdgeLines(redBlock, 0xff0000);
+    addEdgeLines(greenBlock);
+    addEdgeLines(redBlock);
 
     grounds.push(greenBlock);
     grounds.push(redBlock);
