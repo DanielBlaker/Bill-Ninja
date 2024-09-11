@@ -38,7 +38,7 @@ function updateOimoPhysics() {
 }
 
 function initOimoPhysics() {
-    world = new OIMO.World({ info: true, worldscale: 100 });
+    world = new OIMO.World({ info: true, worldscale: 100, gravity: [0, -3.27, 0] });
     populate();
 }
 
