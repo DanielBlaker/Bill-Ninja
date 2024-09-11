@@ -19,6 +19,7 @@ function init() {
     setupBackground();
     setupGeometries();
     setupMaterials();
+    setupBat();
     setupEvents();
     initOimoPhysics();
 }
@@ -31,6 +32,7 @@ function setupScene() {
 function loop() {
     updateOimoPhysics();
     renderer.render(scene, camera);
+    updateBat();
     requestAnimationFrame(loop);
 }
 
