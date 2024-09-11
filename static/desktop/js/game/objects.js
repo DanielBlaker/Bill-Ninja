@@ -68,7 +68,8 @@ function clearMesh() {
     while (i--) scene.remove(grounds[i]);
     grounds = [];
     meshs = [];
-    scene.remove(bat.mesh)
+    // if (bat.mesh)
+    //     scene.remove(bat.mesh)
 }
 
 function addEdgeLines(mesh, color = 0x000000) {

@@ -1,7 +1,8 @@
-var bat = { mesh: null, body: null };
+var bat = null;
 
 function setupBat() {
-    if (bat.mesh != null) return;
+    if (bat != null) return;
+    bat = { mesh: null, body: null };
 
     var mat = new THREE.MeshBasicMaterial({ color: 0x444444 })
     var mesh = new THREE.Mesh(geos.box, mat);
@@ -22,6 +23,8 @@ function setupBat() {
 }
 
 function updateBat() {
+    if (bat == null) return;
+
     // bat.body.rot = ([batRotation.x * 360/3.14/2, batRotation.y * 360/3.24/2, batRotation.z * 360/3.14/2])
     bat.mesh.rotation.set(batRotation.x, batRotation.y, batRotation.z)
     // bat.mesh.quaternion.copy(bat.body.getQuaternion());
