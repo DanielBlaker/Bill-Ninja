@@ -23,41 +23,10 @@ function init() {
     initOimoPhysics();
 }
 
-function setupScene() {
-    canvas = document.getElementById("canvas");
-    scene = new THREE.Scene();
-}
-
 function loop() {
     updateOimoPhysics();
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
-}
-
-function addStaticBox(size, position, rotation, material) {
-    var mesh = new THREE.Mesh(geos.box, material || mats.ground);
-    mesh.scale.set(size[0], size[1], size[2]);
-    mesh.position.set(position[0], position[1], position[2]);
-    mesh.rotation.set(rotation[0] * ToRad, rotation[1] * ToRad, rotation[2] * ToRad);
-    scene.add(mesh);
-    grounds.push(mesh);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    return mesh;
-}
-
-function clearMesh() {
-    var i = meshs.length;
-    while (i--) scene.remove(meshs[i]);
-    i = grounds.length;
-    while (i--) scene.remove(grounds[i]);
-    grounds = [];
-    meshs = [];
-}
-
-function initOimoPhysics() {
-    world = new OIMO.World({ info: true, worldscale: 100 });
-    populate();
 }
 
 function populate() {
@@ -65,8 +34,19 @@ function populate() {
     world.clear();
     bodys = [];
 
-    var texts = ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze"];
-    var intervalMs = 2000;
+    var texts = [
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+        "The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze",
+    ];
+    var intervalMs = 200;
 
     addGrounds();
 
@@ -103,11 +83,28 @@ function addObject(text) {
 }
 
 function addGrounds() {
+    var greenGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00 });
+    var redGlowMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, emissive: 0xff0000 });
+
+    var greenBlock = addStaticBox([40, 40, 390], [-180, 20, 0], [0, 0, 0], greenGlowMaterial);
+    var redBlock = addStaticBox([40, 40, 390], [180, 20, 0], [0, 0, 0], redGlowMaterial);
+    var floor = addStaticBox([400, 80, 400], [0, -40, 0], [0, 0, 0]);
+
+    addEdgeLines(greenBlock, 0x00ff00);
+    addEdgeLines(redBlock, 0xff0000);
+
+    grounds.push(greenBlock);
+    grounds.push(redBlock);
+
     world.add({ size: [40, 40, 390], pos: [-180, 20, 0], world: world });
     world.add({ size: [40, 40, 390], pos: [180, 20, 0], world: world });
     world.add({ size: [400, 80, 400], pos: [0, -40, 0], world: world });
+}
 
-    floor = addStaticBox([400, 80, 400], [0, -40, 0], [0, 0, 0]);
-    addStaticBox([40, 40, 390], [-180, 20, 0], [0, 0, 0]);
-    addStaticBox([40, 40, 390], [180, 20, 0], [0, 0, 0]);
+
+function addEdgeLines(mesh, color) {
+    var edges = new THREE.EdgesGeometry(mesh.geometry);
+    var lineMaterial = new THREE.LineBasicMaterial({ color: color });
+    var line = new THREE.LineSegments(edges, lineMaterial);
+    mesh.add(line);
 }

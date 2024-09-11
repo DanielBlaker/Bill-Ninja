@@ -16,5 +16,33 @@ function updateOimoPhysics() {
             var y = 100 + Math.random() * 1000;
             body.resetPosition(x, y, z);
         }
+
+        if (checkCollision(mesh, grounds[0])) {
+            console.log("Touched green block");
+            scene.remove(mesh);
+            world.removeRigidBody(body);
+            bodys.splice(i, 1);
+            meshs.splice(i, 1);
+        }
+
+        if (checkCollision(mesh, grounds[1])) {
+            console.log("Touched red block");
+            scene.remove(mesh);
+            world.removeRigidBody(body);
+            bodys.splice(i, 1);
+            meshs.splice(i, 1);
+        }
     }
+}
+
+function initOimoPhysics() {
+    world = new OIMO.World({ info: true, worldscale: 100 });
+    populate();
+}
+
+
+function checkCollision(mesh1, mesh2) {
+    var box1 = new THREE.Box3().setFromObject(mesh1);
+    var box2 = new THREE.Box3().setFromObject(mesh2);
+    return box1.intersectsBox(box2);
 }

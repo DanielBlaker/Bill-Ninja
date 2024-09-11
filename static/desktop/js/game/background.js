@@ -25,3 +25,8 @@ function gradTexture(color) {
     texture.needsUpdate = true;
     return texture;
 }
+
+function setupScene() {
+    canvas = document.getElementById("canvas");
+    scene = new THREE.Scene();
+}
