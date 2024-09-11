@@ -91,8 +91,8 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function addStaticBox(size, position, rotation) {
-    var mesh = new THREE.Mesh( geos.box, mats.ground );
+function addStaticBox(size, position, rotation, material) {
+    var mesh = new THREE.Mesh( geos.box, material || mats.ground  );
     mesh.scale.set( size[0], size[1], size[2] );
     mesh.position.set( position[0], position[1], position[2] );
     mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
@@ -128,31 +128,39 @@ function populate() {
     world.clear();
     bodys = [];
 
+    var expenceText = "The Expence Is"
+    var letterTexture = createTextTexture(expenceText);
+    var letterMaterial = new THREE.MeshBasicMaterial({ map: letterTexture });
+
+
     //add ground
     var ground0 = world.add({size:[40, 40, 390], pos:[-180,20,0], world:world});
     var ground1 = world.add({size:[40, 40, 390], pos:[180,20,0], world:world});
     var ground2 = world.add({size:[400, 80, 400], pos:[0,-40,0], world:world});
 
-    addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
-    addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
     floor = addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
+    addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
+    addStaticBox([40, 40, 390], [180,20,0], [0,0,0], letterMaterial);
 
     //add object
     var x, y, z, w, h, d;
 
-    var max = 100;
+    var max = 30
     var i = max;
     while (i--){
         x = -100 + Math.random()*200;
         z = -100 + Math.random()*200;
         y = 100 + Math.random()*1000;
-        w = 10 + Math.random()*10;
-        h = 10 + Math.random()*10;
-        d = 10 + Math.random()*10;
+
+        var textDimensions = calculateTextDimensions(expenceText);
+        
+        w = textDimensions.width * (1 + Math.random()/5);
+        h = textDimensions.height * (1 + Math.random()/5);
+        d = 5 + Math.random()*10;
 
         bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
-        meshs[i] = new THREE.Mesh( geos.box, mats.box );
-        meshs[i].scale.set( w, h, d );
+        meshs[i] = new THREE.Mesh(geos.box, letterMaterial);
+        meshs[i].scale.set(w, h, d);
 
         meshs[i].castShadow = true;
         meshs[i].receiveShadow = true;
@@ -231,7 +239,46 @@ function basicTexture(n){
     tx.needsUpdate = true;
     return tx;
 }
+function createTextTexture(text, fontSize = 20, fontFamily = 'Impact') {
+    var dimensions = calculateTextDimensions(text, fontSize, fontFamily);
+    var canvas = document.createElement('canvas');
+    canvas.width = dimensions.width;
+    canvas.height = dimensions.height;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF'; // Background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000000'; // Text color
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
 
+    var lines = text.split('\n');
+    lines.forEach((line, index) => {
+        ctx.fillText(line, 0, index * fontSize);
+    });
+
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+}
+
+function calculateTextDimensions(text, fontSize = 20, fontFamily = 'Arial') {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    var lines = text.split('\n');
+    var width = 0;
+    var height = lines.length * fontSize;
+    
+    lines.forEach(line => {
+        var lineWidth = ctx.measureText(line).width;
+        if (lineWidth > width) {
+            width = lineWidth;
+        }
+    });
+
+    return { width, height };
+}
 
 const socket = io();
 socket.on('rotation', console.log)
