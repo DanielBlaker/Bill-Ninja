@@ -70,44 +70,52 @@ function clearMesh() {
     meshs = [];
 }
 
-function addEdgeLines(mesh, color) {
+function addEdgeLines(mesh, color = 0x000000) {
     var edges = new THREE.EdgesGeometry(mesh.geometry);
-    var lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+    var lineMaterial = new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
     var line = new THREE.LineSegments(edges, lineMaterial);
     mesh.add(line);
 }
 
-function createParticleEffect(position, color) {
+function createParticleEffect(mesh, targetColor) {
     var particleCount = 100;
-    var particles = new THREE.BufferGeometry();
-    var positions = new Float32Array(particleCount * 3);
-    var colors = new Float32Array(particleCount * 3);
+    var particles = new THREE.Geometry();
+    var boundingBox = new THREE.Box3().setFromObject(mesh);
+    var size = new THREE.Vector3();
+    boundingBox.getSize(size);
 
-    for (var i = 0; i < particleCount; i++) {
-        positions[i * 3] = position.x + (Math.random() - 0.5) * 20;
-        positions[i * 3 + 1] = position.y + (Math.random() - 0.5) * 20;
-        positions[i * 3 + 2] = position.z + (Math.random() - 0.5) * 20;
+    var enlargedSize = size.multiplyScalar(1.4);
 
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
+    function generateParticles() {
+        particles.vertices = [];
+        for (var i = 0; i < particleCount; i++) {
+            var pX = mesh.position.x + (Math.random() - 0.5) * enlargedSize.x;
+            var pY = mesh.position.y + (Math.random() - 0.5) * enlargedSize.y;
+            var pZ = mesh.position.z + (Math.random() - 0.5) * enlargedSize.z;
+            var particle = new THREE.Vector3(pX, pY, pZ);
+            particles.vertices.push(particle);
+        }
+        particles.verticesNeedUpdate = true;
     }
 
-    // particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    // particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    generateParticles();
 
-    var particleMaterial = new THREE.PointsMaterial({
-        size: 2,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.75
+    var pMaterial = new THREE.PointsMaterial({
+        color: targetColor,
+        size: 4,
+        blending: THREE.AdditiveBlending,
+        transparent: true
     });
 
-    var particleSystem = new THREE.Points(particles, particleMaterial);
+    var particleSystem = new THREE.Points(particles, pMaterial);
     scene.add(particleSystem);
 
-    // Remove the particle system after some time
     setTimeout(() => {
-        scene.remove(particleSystem);
-    }, 1000);
+        generateParticles();
+        setTimeout(() => {
+            scene.remove(particleSystem);
+            particles.dispose(); // Dispose of the geometry to free up memory
+            pMaterial.dispose(); // Dispose of the material to free up memory
+        }, 200);
+    }, 200);
 }

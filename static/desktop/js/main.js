@@ -92,8 +92,8 @@ function addGrounds() {
     var redBlock = addStaticBox([40, 40, 390], [180, 20, 0], [0, 0, 0], redGlowMaterial);
     var floor = addStaticBox([400, 80, 400], [0, -40, 0], [0, 0, 0]);
 
-    addEdgeLines(greenBlock, 0x00ff00);
-    addEdgeLines(redBlock, 0xff0000);
+    addEdgeLines(greenBlock);
+    addEdgeLines(redBlock);
 
     grounds.push(greenBlock);
     grounds.push(redBlock);
