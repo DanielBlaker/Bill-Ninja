@@ -19,9 +19,8 @@ function init() {
     setupBackground();
     setupGeometries();
     setupMaterials();
-    setupBat();
-    setupEvents();
     initOimoPhysics();
+    populate()
 }
 
 function loop() {
@@ -34,6 +33,7 @@ function loop() {
 function populate() {
     clearMesh();
     world.clear();
+    
     bodys = [];
 
     var texts = [
@@ -61,6 +61,7 @@ function populate() {
         }
     }
     dropNextText();
+    setupBat()
 }
 
 function addObject(text) {
