@@ -4,13 +4,18 @@ function setupBat() {
     if (bat != null) return;
     bat = { mesh: null, body: null };
 
-    var mat = new THREE.MeshBasicMaterial({ color: 0x444444 })
+    var mat = new THREE.MeshBasicMaterial({ color: 0x444444 });
     var mesh = new THREE.Mesh(geos.box, mat);
     mesh.scale.set(30, 30, 350);
-    mesh.position.set(0, 200, 50);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    bat.mesh = mesh;
+    // Create a pivot group and position it
+    var pivot = new THREE.Group();
+    pivot.position.set(0, 200, 50);
+    pivot.add(mesh);
+    
+    // Position the mesh so its rotation pivot is at the end
+    mesh.position.set(0, 0, mesh.scale.z / 2 - 60); // Move the mesh to align (almost) with the pivot
+
+    bat.mesh = pivot; // Use the pivot group as the bat mesh
     scene.add(bat.mesh);
 
     bat.body = world.add({
