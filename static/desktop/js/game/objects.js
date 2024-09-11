@@ -93,8 +93,8 @@ function createParticleEffect(position, color) {
         colors[i * 3 + 2] = color.b;
     }
 
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    // particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    // particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     var particleMaterial = new THREE.PointsMaterial({
         size: 2,
