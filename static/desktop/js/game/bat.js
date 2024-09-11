@@ -18,30 +18,28 @@ function setupBat() {
         size: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
         pos: [mesh.position.x, mesh.position.y, mesh.position.z],
         move: false,
-        world: world
+        world: world,
+        isKinematic: true
     });
 }
 
 function updateBat() {
     if (bat == null) return;
 
-    // bat.body.rot = ([batRotation.x * 360/3.14/2, batRotation.y * 360/3.24/2, batRotation.z * 360/3.14/2])
     bat.mesh.rotation.set(batRotation.x, batRotation.y, batRotation.z)
-    // bat.mesh.quaternion.copy(bat.body.getQuaternion());
     var quat = bat.mesh.quaternion;
-    // bat.body.position = bat.mesh.position.clone();
-    // bat.body.orientation = quat // [quat.x, quat.y, quat.z, quat.w];
     bat.body.orientation.x = quat.x
     bat.body.orientation.y = quat.y
     bat.body.orientation.z = quat.z
     bat.body.orientation.w = quat.w
-    // bat.body.rot.x++;
-    console.log(bat.body)
-    // bat.mesh.quaternion.set(quat.x, quat.y, quat.z,quat.w)
+    bat.body.isStatic = false
 
-    // bat.body.position.x = bat.mesh.position.x
-    // bat.body.position.y = bat.mesh.position.y
-    // bat.body.position.z = bat.mesh.position.z
+    // bat.body.angularVelocity.x = batRotation.x * 360/3.14/2
+    // bat.body.angularVelocity.y = batRotation.y * 360/3.14/2
+    // bat.body.angularVelocity.z = batRotation.z * 360/3.14/2
+
+    bat.body.kinematic = true
+    console.log(bat.body)
 
     bat.mesh.position.copy(bat.body.getPosition());
     bat.mesh.quaternion.copy(bat.body.getQuaternion());
