@@ -8,56 +8,46 @@
 </head>
 
 <body>
-    <button id="request" onclick="permission()">Request</button>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
         integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
         crossorigin="anonymous"></script>
+        <button id="startButton" >Start</button>
     <script>
+        function client() {
+            const socket = io();
+            const orientationDisplay = document.getElementById('orientation');
 
-        const socket = io();
+            function handleOrientation(event) {
+                const { alpha, beta, gamma } = event;
+                const data = { alpha, beta, gamma };
+                socket.emit('acceleration', data);
+                orientationDisplay.textContent = `Alpha: ${alpha?.toFixed(2)}, Beta: ${beta?.toFixed(2)}, Gamma: ${gamma?.toFixed(2)}`;
+            }
 
-        function accelerationHandler(acceleration) {
-            socket.emit('acceleration', JSON.stringify(acceleration))
-            console.log(acceleration)
-            // document.body.innerText = JSON.stringify(acceleration)
-        }
-
-        function rotationHandler(rotation) {
-            socket.emit('rotation', rotation)
-            console.log(rotation)
-        }
-        
-        function handleMotion(event) {
-            const { acceleration, rotationRate, interval } = event;
-            const data = {
-              acceleration: {
-                x: acceleration.x,
-                y: acceleration.y,
-                z: acceleration.z
-              },
-              rotationRate: {
-                alpha: rotationRate.alpha,
-                beta: rotationRate.beta,
-                gamma: rotationRate.gamma
-              },
-              interval
-            };
-            
-            socket.emit('acceleration', data);
-            dataElement.textContent = JSON.stringify(data, null, 2);
-          }
-
-          if (typeof DeviceMotionEvent.requestPermission === 'function') {
-            DeviceMotionEvent.requestPermission()
-              .then(permissionState => {
-                if (permissionState === 'granted') {
-                  window.addEventListener('devicemotion', handleMotion);
+            function requestOrientationPermission() {
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                window.addEventListener('deviceorientation', handleOrientation);
+                            } else {
+                                orientationDisplay.textContent = 'Permission to access device orientation was denied';
+                            }
+                        })
+                        .catch(console.error);
+                } else if ('DeviceOrientationEvent' in window) {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                } else {
+                    orientationDisplay.textContent = 'Device Orientation API not supported.';
                 }
-              })
-              .catch(console.error);
-          } else {
-            window.addEventListener('deviceorientation', handleMotion);
-          }
+            }
+
+            document.getElementById('startButton').addEventListener('click', requestOrientationPermission);
+        }
+
+        if (typeof document !== "undefined") {
+            client();
+        }
     </script>
 </body>
 
