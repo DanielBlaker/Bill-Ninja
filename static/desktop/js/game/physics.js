@@ -19,6 +19,7 @@ function updateOimoPhysics() {
 
         if (checkCollision(mesh, grounds[0])) {
             console.log("Touched green block");
+            createParticleEffect(mesh.position, new THREE.Color(0xff0000));
             scene.remove(mesh);
             world.removeRigidBody(body);
             bodys.splice(i, 1);
@@ -27,6 +28,7 @@ function updateOimoPhysics() {
 
         if (checkCollision(mesh, grounds[1])) {
             console.log("Touched red block");
+            createParticleEffect(mesh.position, new THREE.Color(0xff0000));
             scene.remove(mesh);
             world.removeRigidBody(body);
             bodys.splice(i, 1);

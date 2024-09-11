@@ -69,3 +69,45 @@ function clearMesh() {
     grounds = [];
     meshs = [];
 }
+
+function addEdgeLines(mesh, color) {
+    var edges = new THREE.EdgesGeometry(mesh.geometry);
+    var lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+    var line = new THREE.LineSegments(edges, lineMaterial);
+    mesh.add(line);
+}
+
+function createParticleEffect(position, color) {
+    var particleCount = 100;
+    var particles = new THREE.BufferGeometry();
+    var positions = new Float32Array(particleCount * 3);
+    var colors = new Float32Array(particleCount * 3);
+
+    for (var i = 0; i < particleCount; i++) {
+        positions[i * 3] = position.x + (Math.random() - 0.5) * 20;
+        positions[i * 3 + 1] = position.y + (Math.random() - 0.5) * 20;
+        positions[i * 3 + 2] = position.z + (Math.random() - 0.5) * 20;
+
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+    }
+
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    var particleMaterial = new THREE.PointsMaterial({
+        size: 2,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75
+    });
+
+    var particleSystem = new THREE.Points(particles, particleMaterial);
+    scene.add(particleSystem);
+
+    // Remove the particle system after some time
+    setTimeout(() => {
+        scene.remove(particleSystem);
+    }, 1000);
+}

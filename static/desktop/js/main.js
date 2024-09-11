@@ -100,11 +100,3 @@ function addGrounds() {
     world.add({ size: [40, 40, 390], pos: [180, 20, 0], world: world });
     world.add({ size: [400, 80, 400], pos: [0, -40, 0], world: world });
 }
-
-
-function addEdgeLines(mesh, color) {
-    var edges = new THREE.EdgesGeometry(mesh.geometry);
-    var lineMaterial = new THREE.LineBasicMaterial({ color: color });
-    var line = new THREE.LineSegments(edges, lineMaterial);
-    mesh.add(line);
-}
