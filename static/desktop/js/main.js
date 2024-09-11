@@ -61,16 +61,17 @@ function dropExpence(texts) {
     var index = 0;
     function dropNextText() {
         if (index < texts.length) {
-            addObject(texts[index]);
+            var isDecision = index === texts.length - 1;
+            addObject(texts[index], isDecision);
             index++;
-            setTimeout(dropNextText, 1000); // 200ms delay between each string block
+            setTimeout(dropNextText, 1000);
         }
     }
     dropNextText();
-    setupBat()
+    setupBat();
 }
 
-function addObject(text) {
+function addObject(text, isDecision) {
     var x = -100 + Math.random() * 200;
     var z = -100 + Math.random() * 200;
     var y = 100 + Math.random() * 1000;
@@ -81,15 +82,30 @@ function addObject(text) {
     var d = 5 + Math.random() * 10;
 
     var body = world.add({ type: 'box', size: [w, h, d], pos: [x, y, z], move: true, world: world });
-    var mesh = new THREE.Mesh(geos.box, new THREE.MeshBasicMaterial({ map: createTextTexture(text) }));
+    
+    // Create glowing material
+    var material = new THREE.MeshBasicMaterial({
+        map: createTextTexture(text),
+        emissive: isDecision ? new THREE.Color(0x000010) : new THREE.Color(0x000000)
+    });
+
+    var mesh = new THREE.Mesh(geos.box, material);
     mesh.scale.set(w, h, d);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
+    // Attach `isDecision` property
+    mesh.isDecision = isDecision;
+
     scene.add(mesh);
     bodys.push(body);
     meshs.push(mesh);
+
+    if (isDecision) {
+        addEdgeLines(mesh);
+    }
 }
+
 
 function addGrounds() {
     var greenGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00 });
