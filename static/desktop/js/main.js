@@ -36,15 +36,12 @@ function populate() {
     bodys = [];
 
     var texts = [
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"],
-        ["The Expense Is", "By Daniel", "100 AUD", "Spent On Cheeze", "Decision?"]
+        ["By Daniel", "20 GBP", "At Ye Olde Pub", "Work Drinkees", "Decision?"],
+        ["By Daniel", "100 JPY", "At Crown Hotel", "Work Trip", "Decision?"],
+        ["By Daniel", "100 AUD", "At Kobab", "Big Lunch!", "Decision?"],
     ];
 
-    let delayBetweenArrays = 10000; // 2 seconds delay before starting the next array
+    let delayBetweenArrays = 8000; // 1 minute delay before starting the next array
     let totalDelay = 0;
 
     texts.forEach((arr, index) => {
@@ -62,20 +59,21 @@ function dropExpence(texts) {
     function dropNextText() {
         if (index < texts.length) {
             var isDecision = index === texts.length - 1;
-            addObject(texts[index], isDecision);
+            addObject(texts, index, isDecision);
             index++;
-            setTimeout(dropNextText, 1000);
+            setTimeout(dropNextText, 900);
         }
     }
     dropNextText();
     setupBat();
 }
 
-function addObject(text, isDecision) {
+function addObject(texts, textIndex, isDecision) {
     var x = -100 + Math.random() * 200;
     var z = -100 + Math.random() * 200;
-    var y = 100 + Math.random() * 1000;
+    var y = 500 + Math.random() * 100;
 
+    var text = texts[textIndex];
     var textDimensions = calculateTextDimensions(text);
     var w = textDimensions.width * (1 + Math.random() / 5);
     var h = textDimensions.height * (1 + Math.random() / 5);
@@ -83,29 +81,33 @@ function addObject(text, isDecision) {
 
     var body = world.add({ type: 'box', size: [w, h, d], pos: [x, y, z], move: true, world: world });
     
-    // Create glowing material
     var material = new THREE.MeshBasicMaterial({
         map: createTextTexture(text),
-        emissive: isDecision ? new THREE.Color(0x000010) : new THREE.Color(0x000000)
+    });
+
+    var material = new THREE.MeshBasicMaterial({
+        map: createTextTexture(text),
     });
 
     var mesh = new THREE.Mesh(geos.box, material);
-    mesh.scale.set(w, h, d);
+    
+    if (isDecision) {
+        mesh.scale.set(w * 2, h * 2, d * 2); 
+        mesh.material.color = new THREE.Color(0xf000f0);  
+        mesh.attachedTexts = texts;
+        addEdgeLines(mesh);
+    } else {
+        mesh.scale.set(w, h, d);
+    }
+    
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-
-    // Attach `isDecision` property
     mesh.isDecision = isDecision;
 
     scene.add(mesh);
     bodys.push(body);
     meshs.push(mesh);
-
-    if (isDecision) {
-        addEdgeLines(mesh);
-    }
 }
-
 
 function addGrounds() {
     var greenGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00 });
