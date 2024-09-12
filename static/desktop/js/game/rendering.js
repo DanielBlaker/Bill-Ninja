@@ -17,12 +17,12 @@ function onWindowResize() {
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 5000);
-    camera.position.set(0, 160, 400);
+    camera.position.set(0, 400, 800);
 }
 
 function setupControls() {
     controls = new THREE.OrbitControls(camera, canvas);
-    controls.target.set(0, 20, 0);
+    controls.target.set(0, 200, 0);
     controls.update();
 }
 
