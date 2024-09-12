@@ -13,6 +13,10 @@
         crossorigin="anonymous"></script>
         <button id="startButton" >Start</button>
     <script>
+
+        let speed = 0;
+        const scalingFactor = 10; // Adjust this factor to control how much farther the objects move
+
         function client() {
             const socket = io();
             const orientationDisplay = document.getElementById('orientation');
@@ -41,7 +45,6 @@
                     orientationDisplay.textContent = 'Device Orientation API not supported.';
                 }
             }
-
             document.getElementById('startButton').addEventListener('click', requestOrientationPermission);
         }
 
