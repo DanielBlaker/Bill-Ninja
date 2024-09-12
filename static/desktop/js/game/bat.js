@@ -7,21 +7,26 @@ function setupBat() {
     var mat = new THREE.MeshBasicMaterial({ color: 0x444444 });
     var mesh = new THREE.Mesh(geos.box, mat);
     mesh.scale.set(30, 30, 350);
+
     // Create a pivot group and position it
     var pivot = new THREE.Group();
-    pivot.position.set(0, 200, 50);
-    pivot.add(mesh);
-    
-    // Position the mesh so its rotation pivot is at the end
-    mesh.position.set(0, 0, mesh.scale.z / 2 - 60); // Move the mesh to align (almost) with the pivot
+    pivot.position.set(0, 200, 0);
 
-    bat.mesh = pivot; // Use the pivot group as the bat mesh
+    // Move the mesh so its emphasis is shifted forward
+    mesh.position.set(0, 0, -175); // Move the mesh to keep the front in place
+
+    // Add the mesh to the pivot
+    pivot.add(mesh);
+
+    // Update the bat mesh and add to the scene
+    bat.mesh = pivot;
     scene.add(bat.mesh);
 
+    // Set up the physical body with correct position and size
     bat.body = world.add({
         type: 'box',
         size: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
-        pos: [mesh.position.x, mesh.position.y, mesh.position.z],
+        pos: [mesh.position.x, mesh.position.y, pivot.position.z+200],
         move: false,
         world: world,
         isKinematic: true
