@@ -41,14 +41,14 @@ function populate() {
         ["By Daniel", "100 AUD", "At Kobab", "Big Lunch!", "Decision?"],
     ];
 
-    let delayBetweenArrays = 8000; // 1 minute delay before starting the next array
+    let delayBetweenArrays = 5000; // 1 minute delay before starting the next array
     let totalDelay = 0;
 
     texts.forEach((arr, index) => {
         setTimeout(() => {
             dropExpence(arr);
         }, totalDelay);
-        totalDelay += delayBetweenArrays + arr.length * 200; // Add delay for each string block
+        totalDelay += delayBetweenArrays + arr.length * 900; // Add delay for each string block
     });
 
     addGrounds();
