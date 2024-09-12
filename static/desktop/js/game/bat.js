@@ -4,22 +4,36 @@ function setupBat() {
     if (bat != null) return;
     bat = { mesh: null, body: null };
 
-    var mat = new THREE.MeshBasicMaterial({ color: 0x444444 });
-    var mesh = new THREE.Mesh(geos.box, mat);
-    mesh.scale.set(30, 30, 350);
+    // Create the material for the bat
+    var mat = new THREE.MeshStandardMaterial({ color: 0xd4c46a });
+    var handleMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
 
-    // Create a pivot group and position it
+    // Create the bat blade (rectangular part)
+    var bladeGeometry = new THREE.BoxGeometry(30, 60, 350); // width, height, depth
+    var bladeMesh = new THREE.Mesh(bladeGeometry, mat);
+
+    // Create the handle (cylindrical part)
+    var handleGeometry = new THREE.CylinderGeometry(10, 10, 100, 32); // radiusTop, radiusBottom, height, radialSegments
+    var handleMesh = new THREE.Mesh(handleGeometry, handleMat);
+
+    // Position the handle
+    bladeMesh.position.set(0, 0, -200); // Adjust position to align with the blade
+
+    // Rotate the handle to align with the blade
+    handleMesh.rotation.z = Math.PI / 2;
+    handleMesh.rotation.y = Math.PI / 2;
+
+    // Create a pivot group and add the blade and handle to it
     var pivot = new THREE.Group();
-    pivot.position.set(0, 200, 0);
+    pivot.add(bladeMesh);
+    pivot.add(handleMesh);
 
-    // Move the mesh so its emphasis is shifted forward
-    mesh.position.set(0, 0, -175); // Move the mesh to keep the front in place
-
-    // Add the mesh to the pivot
-    pivot.add(mesh);
+    // Position the pivot group
+    pivot.position.set(0, 175, 0); // Adjust this position if needed
 
     // Update the bat mesh and add to the scene
     bat.mesh = pivot;
+    mesh = bat.mesh
     scene.add(bat.mesh);
 
     // Set up the physical body with correct position and size
@@ -36,7 +50,7 @@ function setupBat() {
 function updateBat() {
     if (bat == null) return;
 
-    bat.mesh.rotation.set(batRotation.x, batRotation.y, batRotation.z)
+    bat.mesh.rotation.set(batRotation.x, batRotation.y-Math.PI/2, batRotation.z)
     var quat = bat.mesh.quaternion;
     bat.body.orientation.x = quat.x
     bat.body.orientation.y = quat.y

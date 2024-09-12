@@ -27,7 +27,7 @@ function setupControls() {
 }
 
 function setupLights() {
-    scene.add(new THREE.AmbientLight(0x3D4143));
+    scene.add(new THREE.AmbientLight(0xc1c2a5));
     light = new THREE.DirectionalLight(0xffffff, 1.4);
     light.position.set(300, 1000, 500);
     light.target.position.set(0, 0, 0);
