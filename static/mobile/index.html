@@ -34,7 +34,6 @@
                         .then(permissionState => {
                             if (permissionState === 'granted') {
                                 window.addEventListener('deviceorientation', handleOrientation);
-                                window.addEventListener('devicemotion', handleMotion);
                             } else {
                                 orientationDisplay.textContent = 'Permission to access device orientation was denied';
                             }
@@ -42,40 +41,10 @@
                         .catch(console.error);
                 } else if ('DeviceOrientationEvent' in window) {
                     window.addEventListener('deviceorientation', handleOrientation);
-                    window.addEventListener('devicemotion', handleMotion);
                 } else {
                     orientationDisplay.textContent = 'Device Orientation API not supported.';
                 }
             }
-
-            // Handle device motion event
-            function handleMotion(event) {
-                const acceleration = event.accelerationIncludingGravity;
-
-                if (acceleration) {
-                    const deltaX = acceleration.x - prevAcceleration.x;
-                    const deltaY = acceleration.y - prevAcceleration.y;
-                    const deltaZ = acceleration.z - prevAcceleration.z;
-
-                    // Calculate the speed (magnitude of acceleration change)
-                    speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-                    // Update previous acceleration values
-                    prevAcceleration.x = acceleration.x;
-                    prevAcceleration.y = acceleration.y;
-                    prevAcceleration.z = acceleration.z;
-
-                    // Use the speed to influence the bat or objects
-                    // Example: Move objects or adjust bat speed based on `speed`
-                    moveObjectsBasedOnSpeed(speed * scalingFactor);
-                }
-            }
-
-            function moveObjectsBasedOnSpeed(speed) {
-                // Implement your logic here to move objects or influence gameplay based on `speed`
-                console.log('Device speed:', speed);
-            }
-
             document.getElementById('startButton').addEventListener('click', requestOrientationPermission);
         }
 
