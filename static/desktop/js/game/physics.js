@@ -17,6 +17,12 @@ function updateOimoPhysics() {
             body.resetPosition(x, y, z);
         }
 
+        if (bat !== null && checkCollision(mesh, bat.mesh)) {
+            console.log("Touched bat");
+            createParticleEffect(mesh, new THREE.Color(0x0000ff));
+            handleBatCollision(body, mesh, bat.mesh)
+        }
+
         if (checkCollision(mesh, grounds[0])) {
             console.log("Touched green block");
             createParticleEffect(mesh, new THREE.Color(0x00ff00));
@@ -82,7 +88,27 @@ function initOimoPhysics() {
 
 
 function checkCollision(mesh1, mesh2) {
+    console.log("checking collision between", mesh1, mesh2);
     var box1 = new THREE.Box3().setFromObject(mesh1);
     var box2 = new THREE.Box3().setFromObject(mesh2);
     return box1.intersectsBox(box2);
+}
+
+function handleBatCollision(body, mesh, batMesh) {
+
+    // Get the positions of the bat and the mesh
+    const meshPosition = mesh.position.clone();
+    const batPosition = batMesh.position.clone();
+
+    // Determine the direction of the hit
+    const hitDirection = meshPosition.x - batPosition.x;
+
+    // Move the mesh based on the direction of the hit
+    if (hitDirection > 0) {
+        // Bat hit from right to left
+        body.resetPosition(meshPosition.x + 10, meshPosition.y, meshPosition.z);
+    } else {
+        // Bat hit from left to right
+        body.resetPosition(meshPosition.x - 10, meshPosition.y, meshPosition.z);
+    }
 }
