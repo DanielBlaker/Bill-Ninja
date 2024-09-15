@@ -10,7 +10,13 @@ Physics by Oimo!
 
 HTTPS forwarding by ngrok!
 
-# Problems experianced on the project
+## Video Demo and Guide! 
+
+[![Demo and Setup](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DdP3nyd9NBjs)](https://www.youtube.com/watch?v=dP3nyd9NBjs)
+
+Or see [here](./documents/Demo.mp4)
+
+## Problems experianced on the project
 
 During the hackathon we discovered that HTTP website was insufficent for collecting gyro data from a phone through a browser.
 This meant that just connecting through the local network was not good enough, unless we could get signed certificates.
@@ -23,7 +29,7 @@ Hence when the bat hits the blocks it can't transfer any momentum and the blocks
 It might have been possible to hack arround this given more time.
 The position all calculations are performed using Quaternions, which are quite hard to work with for hacky off the cuff solutions.
 
-### How run
+## How run
 
 1. Run ngrok forwarding
 
