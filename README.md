@@ -1,6 +1,6 @@
 # Bill-Ninja
 
-Use your phones gyroscope to bat expences into an approval or a rejection like a wii remote!
+Use your phone's gyroscope to bat expences into an approval or a rejection like a wii remote!
 
 Streaming from Phone to Desktop using socket.io!
 
@@ -18,15 +18,15 @@ Or see [here](./documents/Demo.mp4)
 
 ## Problems experianced on the project
 
-During the hackathon we discovered that HTTP website was insufficent for collecting gyro data from a phone through a browser.
+During the hackathon we discovered that HTTP website was insufficient for collecting gyro data from a phone through a browser.
 This meant that just connecting through the local network was not good enough, unless we could get signed certificates.
 We had to get a HTTPS website, and the easiest way to do that was by forwarding using ngrok.
 
-We where unable to get realistic transfer of momentum between the cricket bat and the blocks.
+We were unable to get realistic transfer of momentum between the cricket bat and the blocks.
 It is difficult because the bat was not allowed to float freely, it had to mirror the phone.
 This means that when the bat moves, it does not have momentum, it does lots of little teleports every frame to match the phone.
 Hence when the bat hits the blocks it can't transfer any momentum and the blocks would bounce off as if they hit a still object.
-It might have been possible to hack arround this given more time.
+It might have been possible to hack around this given more time.
 The position all calculations are performed using Quaternions, which are quite hard to work with for hacky off the cuff solutions.
 
 ## How run
